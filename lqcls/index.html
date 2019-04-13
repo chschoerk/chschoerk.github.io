@@ -1,28 +1,367 @@
+
 <!DOCTYPE html>
-<html lang="en">
-<title>LQC-LSD</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<style>
-html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
-.w3-sidebar {
-  z-index: 3;
-  width: 250px;
-  top: 43px;
-  bottom: 0;
-  height: inherit;
-}
-</style>
+<html>
+<head>
+<title>Signal-Dependent Binaural Rendering of Ambisonic Signals</title>
+
+<link href="https://fonts.googleapis.com/css?family=Roboto|Work+Sans|Noto+Serif+SC:300" rel="stylesheet">
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous" />
+<link rel="stylesheet" href="dist/css/trackswitch.css" />
+<link rel="stylesheet" href="dist/css/style.css" />
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="crossorigin="anonymous"></script>
+<script src="dist/js/trackswitch.js"></script>
+<script type="text/javascript">
+var settings = {
+	onlyradiosolo: true,
+	repeat: true,
+};
+$(".player").trackSwitch(settings);
+    jQuery(document).ready(function() {
+        jQuery(".player").trackSwitch({spacebar: true});
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+		jax: ["input/TeX", "output/HTML-CSS"],
+		extensions: ["tex2jax.js"],
+		"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] },
+		tex2jax: { inlineMath: [ ["$", "$"], ["\\(","\\)"] ], displayMath: [ ["$$","$$"], ["\\[", "\\]"] ], processEscapes: true, ignoreClass: "tex2jax_ignore|dno" },
+		TeX: { noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } } },
+		messageStyle: "none"
+	});
+	</script>    
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js"></script>
+
+
+</head>
+
 <body>
 
-<font size="10">
-  <center>
-    <p> coming soon...</p>
-  </center>
-</font>
+	<section class="page-header">
+		<!-- <h1 class="project-name"> Signal-Dependent Binaural Rendering of Ambisonic Signals </h1> -->
+		<h1 class="project-name">Linearly and Quadratically Constrained Least-Squares Decoder<br> for Signal-Dependent Binaural Rendering of Ambisonic Signals</h1>
+		<h2 class="project-tagline">Christian Sch&ouml;rkhuber and Robert H&ouml;ldrich</h2>
+	</section>
+
+	<section class="main-content">
+
+		<p>This page accompanies the paper 
+			<p class="paperref">Sch&ouml;rkhuber, C.; H&ouml;ldrich, R.; <a href="http://www.aes.org/e-lib/browse.cfm?elib=20422" target="_blank">"Linearly and Quadratically Constrained Least-Squares Decoder for Signal-Dependent Binaural Rendering of Ambisonic Signals"</a>, Proceedings of the 2019 AES International Conference on Immersive and Interactive Audio</p>
+		</p>
+
+
+		<!-- <p>
+		The definition of the Euler-Mascheroni constant is
+		$\gamma=\lim_{n\to\infty}\left(\sum_{k=1}^n\frac1k-ln(n)\right) $
+		</p> -->
+
+		<h2>Abstract</h2>
+		Ambisonics has been widely adopted for conveying immersive audio experiences via headphone-based sound
+		scene reproduction. It is well known, however, that the inherent reduction of spatial resolution of order-limited
+		Ambisonic scenes leads to blurred source images, reduced spaciousness and direction-dependent timbral artifacts
+		when rendered for binaural playback. Signal-dependent rendering methods aim to remedy these shortcomings
+		by enhancing the spatial resolution using a set of estimated sound field parameters or by injecting decorrelated
+		signals. It has been shown that such methods can indeed improve the spatial quality of the rendered signals,
+		however, parameter estimation errors and decorrelator artifacts oftentimes introduce audible signal artifacts. In this
+		work we propose a signal-dependent method for binaural rendering of Ambisonic signals based on a constrained
+		least-squares decoder. The proposed method enables faithful reproduction of a direct and a diffuse signal per
+		time-frequency tile requiring only a single sound field parameter and avoiding the need of injecting decorrelated
+		signals.
+
+		<h2>Contact</h2>
+		<a href="mailto:schoerkhuber@iem.at">Christian Sch&ouml;rkhuber</a>
+
+		<h2>Audio examples</h2>
+		The following audio examples were generated using MCRoomSim [1] to simulate Ambisonics signals of differenct acoustic scenes
+		up to order N=35. The signals obtained by the proposed signal-dependent LQC-LS decoder for an input order of N=1 can be compared with the outputs of the MagLS decoder [2], a diffuse-field equalized least squares decoder (LS-deq), a sparse least squares decoder using 6 virtual loudspeakers (LS-sparse) for the same input order, as well as the reference signal, where a least squares decoder and an Ambisonic order N=35 has been used. All decoders are based on the a HRTF dataset of the KU100 [3].  
+
+		<br><br>
+
+		<div class="scene-container">
+			<div class="scene-container-header"> SCENE 1: speech male + speech female</div>
+			<p>dry</p>
+			<div class="player">
+				<!-- <p style="text-align: center;">3 sources with room</p> -->
+				<ts-track title="reference (N=35)" style="background-color: #88AB75;">
+					<ts-source src="sigs/scene01_E_N1_rev0_ref.wav" type="audio/wav"></ts-source>
+				</ts-track>
+				<ts-track title="MagLS (N=1)" style="background-color: rgb(146, 188, 199);">
+					<ts-source src="sigs/scene01_E_N1_rev0_magls.wav" type="audio/wav"></ts-source>
+				</ts-track>
+				<ts-track title="LS-deq (N=1)" style="background-color: rgb(146, 188, 199);">
+					<ts-source src="sigs/scene01_E_N1_rev0_lsdeq.wav" type="audio/wav"></ts-source>
+				</ts-track>
+				<ts-track title="LS-sparse (N=1)" style="background-color: rgb(146, 188, 199);">
+					<ts-source src="sigs/scene01_E_N1_rev0_virtls.wav" type="audio/wav"></ts-source>
+				</ts-track>
+				<ts-track title="LQC-LS (N=1) [proposed]" style="background-color: #DBD56E;">
+					<ts-source src="sigs/scene01_E_N1_rev0_lqcls.wav" type="audio/wav"></ts-source>
+				</ts-track>
+			</div>
+
+			<p>medium</p>
+			<div class="player">
+				<!-- <p style="text-align: center;">3 sources with room</p> -->
+				<ts-track title="reference (N=35)" style="background-color: #88AB75;">
+					<ts-source src="sigs/scene01_E_N1_rev0.5_ref.wav" type="audio/wav"></ts-source>
+				</ts-track>
+				<ts-track title="MagLS (N=1)" style="background-color: rgb(146, 188, 199);">
+					<ts-source src="sigs/scene01_E_N1_rev0.5_magls.wav" type="audio/wav"></ts-source>
+				</ts-track>
+				<ts-track title="LS-deq (N=1)" style="background-color: rgb(146, 188, 199);">
+					<ts-source src="sigs/scene01_E_N1_rev0.5_lsdeq.wav" type="audio/wav"></ts-source>
+				</ts-track>
+				<ts-track title="LS-sparse (N=1)" style="background-color: rgb(146, 188, 199);">
+					<ts-source src="sigs/scene01_E_N1_rev0.5_virtls.wav" type="audio/wav"></ts-source>
+				</ts-track>
+				<ts-track title="LQC-LS (N=1) [proposed]" style="background-color: #DBD56E;">
+					<ts-source src="sigs/scene01_E_N1_rev0.5_lqcls.wav" type="audio/wav"></ts-source>
+				</ts-track>
+			</div>
+
+			<p>reverberant</p>
+			<div class="player">
+				<!-- <p style="text-align: center;">3 sources with room</p> -->
+				<ts-track title="reference (N=35)" style="background-color: #88AB75;">
+					<ts-source src="sigs/scene01_E_N1_rev1_ref.wav" type="audio/wav"></ts-source>
+				</ts-track>
+				<ts-track title="MagLS (N=1)" style="background-color: rgb(146, 188, 199);">
+					<ts-source src="sigs/scene01_E_N1_rev1_magls.wav" type="audio/wav"></ts-source>
+				</ts-track>
+				<ts-track title="LS-deq (N=1)" style="background-color: rgb(146, 188, 199);">
+					<ts-source src="sigs/scene01_E_N1_rev1_lsdeq.wav" type="audio/wav"></ts-source>
+				</ts-track>
+				<ts-track title="LS-sparse (N=1)" style="background-color: rgb(146, 188, 199);">
+					<ts-source src="sigs/scene01_E_N1_rev1_virtls.wav" type="audio/wav"></ts-source>
+				</ts-track>
+				<ts-track title="LQC-LS (N=1) [proposed]" style="background-color: #DBD56E;">
+					<ts-source src="sigs/scene01_E_N1_rev1_lqcls.wav" type="audio/wav"></ts-source>
+				</ts-track>
+			</div>
+
+		</div>
+
+		<br>
+
+		<!-- ===============================================================================================  -->
+		<div class="scene-container">
+				<div class="scene-container-header"> SCENE 2: speech male + speech female + music box</div>
+				<p>dry</p>
+				<div class="player">
+					<!-- <p style="text-align: center;">3 sources with room</p> -->
+					<ts-track title="reference (N=35)" style="background-color: #88AB75;">
+						<ts-source src="sigs/scene01_D_N1_rev0_ref.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="MagLS (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_D_N1_rev0_magls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LS-deq (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_D_N1_rev0_lsdeq.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LS-sparse (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_D_N1_rev0_virtls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LQC-LS (N=1) [proposed]" style="background-color: #DBD56E;">
+						<ts-source src="sigs/scene01_D_N1_rev0_lqcls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+				</div>
+	
+				<p>medium</p>
+				<div class="player">
+					<!-- <p style="text-align: center;">3 sources with room</p> -->
+					<ts-track title="reference (N=35)" style="background-color: #88AB75;">
+						<ts-source src="sigs/scene01_D_N1_rev0.5_ref.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="MagLS (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_D_N1_rev0.5_magls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LS-deq (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_D_N1_rev0.5_lsdeq.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LS-sparse (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_D_N1_rev0.5_virtls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LQC-LS (N=1) [proposed]" style="background-color: #DBD56E;">
+						<ts-source src="sigs/scene01_D_N1_rev0.5_lqcls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+				</div>
+	
+				<p>reverberant</p>
+				<div class="player">
+					<!-- <p style="text-align: center;">3 sources with room</p> -->
+					<ts-track title="reference (N=35)" style="background-color: #88AB75;">
+						<ts-source src="sigs/scene01_D_N1_rev1_ref.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="MagLS (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_D_N1_rev1_magls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LS-deq (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_D_N1_rev1_lsdeq.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LS-sparse (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_D_N1_rev1_virtls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LQC-LS (N=1) [proposed]" style="background-color: #DBD56E;">
+						<ts-source src="sigs/scene01_D_N1_rev1_lqcls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+				</div>
+	
+			</div>
+
+		<br>
+
+		<!-- ===============================================================================================  -->
+		<div class="scene-container">
+				<div class="scene-container-header"> SCENE 3: speech female + piano + bird</div>
+				<p>dry</p>
+				<div class="player">
+					<!-- <p style="text-align: center;">3 sources with room</p> -->
+					<ts-track title="reference (N=35)" style="background-color: #88AB75;">
+						<ts-source src="sigs/scene01_C_N1_rev0_ref.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="MagLS (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_C_N1_rev0_magls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LS-deq (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_C_N1_rev0_lsdeq.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LS-sparse (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_C_N1_rev0_virtls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LQC-LS (N=1) [proposed]" style="background-color: #DBD56E;">
+						<ts-source src="sigs/scene01_C_N1_rev0_lqcls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+				</div>
+	
+				<p>medium</p>
+				<div class="player">
+					<!-- <p style="text-align: center;">3 sources with room</p> -->
+					<ts-track title="reference (N=35)" style="background-color: #88AB75;">
+						<ts-source src="sigs/scene01_C_N1_rev0.5_ref.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="MagLS (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_C_N1_rev0.5_magls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LS-deq (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_C_N1_rev0.5_lsdeq.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LS-sparse (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_C_N1_rev0.5_virtls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LQC-LS (N=1) [proposed]" style="background-color: #DBD56E;">
+						<ts-source src="sigs/scene01_C_N1_rev0.5_lqcls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+				</div>
+	
+				<p>reverberant</p>
+				<div class="player">
+					<!-- <p style="text-align: center;">3 sources with room</p> -->
+					<ts-track title="reference (N=35)" style="background-color: #88AB75;">
+						<ts-source src="sigs/scene01_C_N1_rev1_ref.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="MagLS (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_C_N1_rev1_magls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LS-deq (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_C_N1_rev1_lsdeq.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LS-sparse (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_C_N1_rev1_virtls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LQC-LS (N=1) [proposed]" style="background-color: #DBD56E;">
+						<ts-source src="sigs/scene01_C_N1_rev1_lqcls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+				</div>
+	
+			</div>
+
+
+		<br>
+
+		<!-- ===============================================================================================  -->
+		<div class="scene-container">
+				<div class="scene-container-header"> SCENE 4: violin + viola + double bass + bassoon</div>
+				<p>dry</p>
+				<div class="player">
+					<!-- <p style="text-align: center;">3 sources with room</p> -->
+					<ts-track title="reference (N=35)" style="background-color: #88AB75;">
+						<ts-source src="sigs/scene01_B_N1_rev0_ref.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="MagLS (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_B_N1_rev0_magls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LS-deq (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_B_N1_rev0_lsdeq.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LS-sparse (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_B_N1_rev0_virtls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LQC-LS (N=1) [proposed]" style="background-color: #DBD56E;">
+						<ts-source src="sigs/scene01_B_N1_rev0_lqcls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+				</div>
+	
+				<p>medium</p>
+				<div class="player">
+					<!-- <p style="text-align: center;">3 sources with room</p> -->
+					<ts-track title="reference (N=35)" style="background-color: #88AB75;">
+						<ts-source src="sigs/scene01_B_N1_rev0.5_ref.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="MagLS (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_B_N1_rev0.5_magls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LS-deq (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_B_N1_rev0.5_lsdeq.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LS-sparse (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_B_N1_rev0.5_virtls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LQC-LS (N=1) [proposed]" style="background-color: #DBD56E;">
+						<ts-source src="sigs/scene01_B_N1_rev0.5_lqcls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+				</div>
+	
+				<p>reverberant</p>
+				<div class="player">
+					<!-- <p style="text-align: center;">3 sources with room</p> -->
+					<ts-track title="reference (N=35)" style="background-color: #88AB75;">
+						<ts-source src="sigs/scene01_B_N1_rev1_ref.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="MagLS (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_B_N1_rev1_magls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LS-deq (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_B_N1_rev1_lsdeq.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LS-sparse (N=1)" style="background-color: rgb(146, 188, 199);">
+						<ts-source src="sigs/scene01_B_N1_rev1_virtls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+					<ts-track title="LQC-LS (N=1) [proposed]" style="background-color: #DBD56E;">
+						<ts-source src="sigs/scene01_B_N1_rev1_lqcls.wav" type="audio/wav"></ts-source>
+					</ts-track>
+				</div>
+	
+			</div>
+	
+	
+
+
+		<br>
+
+
+
+		<h2>References</h2>
+
+[1] Wabnitz, Andrew, et al. "Room acoustics simulation for multichannel microphone arrays." Proceedings of the International Symposium on Room Acoustics. 2010.<br>
+[2] Sch&oumlrkhuber, Christian, Markus Zaunschirm, and Robert H&oumlldrich. <a href="https://www.researchgate.net/publication/325080691_Binaural_Rendering_of_Ambisonic_Signals_via_Magnitude_Least_Squares" target="_blank">"Binaural Rendering of Ambisonic Signals via Magnitude Least Squares."</a> Proceedings of the DAGA. Vol. 44. 2018.<br>
+[3] Bernsch&uumltz, Benjamin. "A spherical far field HRIR/HRTF compilation of the Neumann KU 100." Proceedings of the 40th Italian (AIA) annual conference on acoustics and the 39th German annual conference on acoustics (DAGA) conference on acoustics. AIA/DAGA, 2013.<br>
+<br>
+</section>
+<!-- ... -->
 
 </body>
-</html>
- 
+
+</html> 
